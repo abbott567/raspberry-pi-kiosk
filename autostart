@@ -1,0 +1,2 @@
+@chromium-browser —kiosk —incognito http://localhost:3000
+@unclutter -idle 0.1 -root

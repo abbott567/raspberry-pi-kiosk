@@ -120,3 +120,35 @@ and add the following line to the bottom:
 ```
 @unclutter -idle 0.1 -root
 ```
+## Auto reconnect
+
+In testing I found that the Wifi can be a bit flakey on the Raspberry Pi. To combat this you can set up a cronjob that periodically checks the wifi and either forces an attemp to reconnect, or reboots the whole Pi itself. After hours of testing, the force attempt works 9 times out of 10, and is a much softer approach, however it does still break and not come back online. The reboot method works all the time, but is obviously more extreme. Setting up a cronjob for each at different time intervals is probably the best way to guarantee uptime when you're not there to keep an eye on it.
+
+Set up a new bash file with the following command:
+```
+sudo nano /usr/local/bin/check-wifi.sh
+```
+Add the following code.
+```
+ping -c4 8.8.8.8 > /dev/null
+	 
+if [ $? != 0 ] 
+then
+  echo "No network connection, restarting wlan0"
+  /sbin/ifdown 'wlan0'
+  sleep 5
+  /sbin/ifup --force 'wlan0'
+fi
+```
+Set the permissions:
+```
+sudo chmod 775 /usr/local/bin/check-wifi.sh
+```
+Open crontab:
+```
+crontab -e
+```
+Add the following line:
+```
+*/1 * * * * /usr/bin/sudo -H /usr/local/bin/check-wifi.sh > /dev/null 2>&1
+```

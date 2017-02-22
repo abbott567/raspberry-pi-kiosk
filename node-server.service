@@ -1,3 +1,5 @@
+# sudo nano /etc/systemd/system/node-server.service
+
 [Service]
 WorkingDirectory=/path/to/your/repo
 ExecStart=/usr/local/bin/node --expose-gc /home/pi//path/to/your/repo/server.js

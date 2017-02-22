@@ -1,3 +1,6 @@
+# sudo nano /usr/local/bin/check-wifi.sh
+# sudo chmod 775 /usr/local/bin/check-wifi.sh
+
 ping -c4 8.8.8.8 > /dev/null
 
 if [ $? != 0 ]

@@ -1,1 +1,3 @@
+# crontab -e
+
 */1 * * * * /usr/bin/sudo -H /usr/local/bin/check-wifi.sh > /dev/null 2>&1

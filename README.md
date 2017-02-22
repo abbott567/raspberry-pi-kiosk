@@ -128,7 +128,7 @@ Set up a new bash file with the following command:
 ```
 sudo nano /usr/local/bin/check-wifi.sh
 ```
-Add the following code.
+Add the following code. The `ping -c4 8.8.8.8 > /dev/null` line will ping google.com 4 times and then feed into the if statement. If the ping process exit's cleanly then $ should be 0, if it cant access google, it will fail. If it fails, it attempts to reconnect wlan0.
 ```
 ping -c4 8.8.8.8 > /dev/null
 	 
@@ -140,15 +140,15 @@ then
   /sbin/ifup --force 'wlan0'
 fi
 ```
-Set the permissions:
+To make sure the right permissions are set to run the cronjob, set them using the following command:
 ```
 sudo chmod 775 /usr/local/bin/check-wifi.sh
 ```
-Open crontab:
+Next, open crontab using:
 ```
 crontab -e
 ```
-Add the following line:
+Add the following line. The `*/1` means the cronjob will run every 1 minute. It then runs `sudo` and gives the root access to the home directory using `-H` so that it can run the bash script. `> /dev/null 2>&1` is a redirect to dump syslogs and syserrors into a void.
 ```
 */1 * * * * /usr/bin/sudo -H /usr/local/bin/check-wifi.sh > /dev/null 2>&1
 ```

@@ -140,6 +140,14 @@ then
   /sbin/ifup --force 'wlan0'
 fi
 ```
+
+If you want to use the reboot command, then replace the if statement with the following one:
+```
+if [ $? != 0 ] 
+then
+  sudo /sbin/shutdown -r now
+fi
+```
 To make sure the right permissions are set to run the cronjob, set them using the following command:
 ```
 sudo chmod 775 /usr/local/bin/check-wifi.sh

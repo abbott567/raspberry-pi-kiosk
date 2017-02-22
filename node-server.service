@@ -1,0 +1,13 @@
+[Service]
+WorkingDirectory=/path/to/your/repo
+ExecStart=/usr/local/bin/node --expose-gc /home/pi//path/to/your/repo/server.js
+Restart=always
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=nodeServer
+User=root
+Group=root
+Environment=NODE_ENV=production
+
+[Install]
+WantedBy=multi-user.target

@@ -2,7 +2,7 @@
 
 [Service]
 WorkingDirectory=/path/to/your/repo
-ExecStart=/usr/local/bin/node --expose-gc /home/pi//path/to/your/repo/server.js
+ExecStart=/usr/local/bin/node --expose-gc /home/pi/path/to/your/repo/server.js
 Restart=always
 StandardOutput=syslog
 StandardError=syslog

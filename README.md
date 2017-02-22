@@ -1,4 +1,4 @@
-# raspberry-pi-kiosk
+# Raspberry Pi - Kiosk Mode
 
 A collection of scripts that can be used to quickly enable a raspberry pi to boot up as a stand alone kiosk. If you're wanting to run a local server, you will need to follow all of these steps. If you want to boot up and hit a public url, you can skip the Node7 install. The benefit of running your app locally is you can have a custom error screen if the internet connection drops out.
 

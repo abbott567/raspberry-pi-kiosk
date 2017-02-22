@@ -129,7 +129,7 @@ Set up a new bash file with the following command:
 sudo nano /usr/local/bin/check-wifi.sh
 ```
 Add the following code. The `ping -c4 8.8.8.8 > /dev/null` line will ping google.com 4 times and then feed into the if statement. If the ping process exit's cleanly then $ should be 0, if it cant access google, it will fail. If it fails, it attempts to reconnect wlan0.
-```
+```bash
 ping -c4 8.8.8.8 > /dev/null
 	 
 if [ $? != 0 ] 
@@ -142,7 +142,7 @@ fi
 ```
 
 If you want to use the reboot command, then replace the if statement with the following one:
-```
+```bash
 if [ $? != 0 ] 
 then
   sudo /sbin/shutdown -r now

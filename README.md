@@ -132,6 +132,8 @@ sudo nano /usr/local/bin/check-wifi.sh
 ```
 Add the following code. The `ping -c4 8.8.8.8 > /dev/null` line will ping google.com 4 times and then feed into the if statement. If the ping process exit's cleanly then $ should be 0, if it cant access google, it will fail. If it fails, it attempts to reconnect wlan0.
 ```bash
+#!/bin/bash
+
 ping -c4 8.8.8.8 > /dev/null
 	 
 if [ $? != 0 ] 

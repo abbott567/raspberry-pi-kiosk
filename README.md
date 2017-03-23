@@ -164,3 +164,19 @@ Add the following line. The `*/1` means the cronjob will run every 1 minute. It 
 ```
 */1 * * * * /usr/bin/sudo -H /usr/local/bin/check-wifi.sh > /dev/null 2>&1
 ```
+
+## Setting timezone
+
+Sometimes the raspberry pi time can end up out of sync. To fix this, install nptdate with the following command:
+
+```
+sudo apt-get install ntpdate
+```
+
+Once installed, run the configuration using:
+
+```
+sudo raspi-config
+```
+
+Choose localisation settings and set yout timezone. Once you reboot the Pi, the time should sync back up.

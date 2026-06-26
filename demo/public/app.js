@@ -4,7 +4,7 @@ const timeEl = document.getElementById('time');
 const secondsEl = document.getElementById('seconds');
 const dateEl = document.getElementById('date');
 const offlineEl = document.getElementById('offline');
-const retriesEl = document.getElementById('retries');
+const statusEl = document.getElementById('status');
 
 function tick() {
   const now = new Date();
@@ -26,7 +26,9 @@ tick();
 setInterval(tick, 1000);
 
 // Poll the server's health endpoint and toggle the overlay on failure.
-// Track consecutive failures so the overlay can show the retry count.
+// Track consecutive failures so the overlay can show the retry count. After
+// MAX_RETRIES the OS watchdog (check-wifi.sh) reboots the Pi, so the overlay
+// switches to a "Rebooting…" message to reflect what's about to happen.
 const MAX_RETRIES = 5;
 let retries = 0;
 
@@ -41,9 +43,14 @@ async function checkHealth() {
 
   if (online) {
     retries = 0;
+    statusEl.innerHTML = 'Retrying… <span id="retries">0/5</span>';
   } else {
     retries = Math.min(retries + 1, MAX_RETRIES);
-    retriesEl.textContent = `${retries}/${MAX_RETRIES}`;
+    if (retries >= MAX_RETRIES) {
+      statusEl.textContent = 'Rebooting…';
+    } else {
+      statusEl.innerHTML = `Retrying… <span id="retries">${retries}/${MAX_RETRIES}</span>`;
+    }
   }
   offlineEl.hidden = online;
 }

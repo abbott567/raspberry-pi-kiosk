@@ -23,8 +23,9 @@ This guide uses Raspberry Pi OS Bookworm on a Raspberry Pi 4 or 5, with Node 24 
 6. [Setting up kiosk mode](#step-6-setting-up-kiosk-mode)
 7. [Display config](#step-7-display-config)
 8. [Auto-reconnect Wi-Fi](#step-8-auto-reconnect-wi-fi)
-9. [Reboot the Pi into the kiosk](#step-9-reboot-the-pi-into-the-kiosk)
-10. [Create your kiosk interface](#step-10-create-your-kiosk-interface)
+9. [Turn the display on and off on a schedule](#step-9-turn-the-display-on-and-off-on-a-schedule)
+10. [Reboot the Pi into the kiosk](#step-10-reboot-the-pi-into-the-kiosk)
+11. [Create your kiosk interface](#step-11-create-your-kiosk-interface)
 
 ## Step 1. Flash the SD card with Raspberry Pi Imager
 
@@ -86,6 +87,35 @@ If you have any issue with the time being out of sync, you might want to also se
 
 ```bash
 sudo raspi-config nonint do_change_timezone Europe/London
+```
+
+If you continue to have time issues, make sure the Pi is syncing over the internet. 
+
+Check the sync status:
+
+```bash
+timedatectl
+```
+
+Look for the following in the output:
+
+```
+System clock synchronized: yes
+NTP service: active
+```
+
+If it says `no` / `inactive` enable `system-stymesyncd` with the following commands:
+
+```bash
+sudo timedatectl set-ntp true
+sudo systemctl enable --now systemd-timesyncd
+```
+
+Then force an immediate resync and check it's now working:
+
+```bash
+sudo systemctl restart systemd-timesyncd
+timedatectl timesync-status
 ```
 
 #### Display issues
@@ -247,7 +277,55 @@ Then paste in the line from the [`crontab`](crontab) file in this repo at the bo
 
 `*/1 * * * * /usr/bin/sudo -H /usr/local/bin/check-wifi.sh > /dev/null 2>&1`
 
-## Step 9. Reboot the Pi into the kiosk
+## Step 9. Turn the display on and off on a schedule
+
+> [!NOTE]
+> Optional. Skip this step if you want the display on all the time.
+
+If your kiosk doesn't need to be on 24/7, you can blank the screen overnight and wake it back up in the morning. The [`display.sh`](display.sh) script turns the display off or on, and you schedule it with cron just like the Wi-Fi check.
+
+Pi OS runs the `labwc` compositor, which is wlroots-based, so the script uses `wlr-randr` to power the output down and back up. This properly turns the panel off, rather than just showing a black page, so the backlight on the official touchscreen switches off too!
+
+Install `wlr-randr` if it isn't already present:
+
+```bash
+sudo apt install -y wlr-randr
+```
+
+Install the `display.sh` script and make it executable:
+
+```bash
+sudo cp display.sh /usr/local/bin/display.sh
+sudo chmod 755 /usr/local/bin/display.sh
+```
+
+You can test it straight away from an SSH session:
+
+```bash
+/usr/local/bin/display.sh off
+/usr/local/bin/display.sh on
+```
+
+Then add the cron jobs. Run the following command:
+
+```bash
+crontab -e
+```
+
+Then paste in the two display lines from the [`crontab`](crontab) file in this repo at the bottom, adjusting the times to suit. The example turns the screen off at 23:59 and back on at 07:00:
+
+```
+59 23 * * * /usr/local/bin/display.sh off > /dev/null 2>&1
+0 7 * * * /usr/local/bin/display.sh on  > /dev/null 2>&1
+```
+
+Notes:
+
+- The cron job runs as the `pi` user, and the script points `wlr-randr` at that user's session (`/run/user/1000`). If you set up the Pi with a different username, edit the UID at the top of `display.sh` — run `id -u <user>` to find it.
+
+- The script auto-detects the Wayland socket, it can be `wayland-0`, `wayland-1` etc, depending on the setup, so you shouldn't need to set it manually. It also skips the placeholder `NOOP` output that `wlroots` creates while the real display is off, so the screen wakes back up correctly.
+
+## Step 10. Reboot the Pi into the kiosk
 
 With everything set up, reboot and the Pi should come back up straight into
 your kiosk:
@@ -256,7 +334,7 @@ your kiosk:
 sudo reboot
 ```
 
-## Step 10. Create your kiosk interface
+## Step 11. Create your kiosk interface
 
 Now that it's all up and running, you can just build your interface in regular old HTML, CSS and JavaScript.
 

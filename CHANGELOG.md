@@ -17,6 +17,8 @@ A complete set of updated scripts and config for booting a Raspberry Pi 4/5 stra
 - `kiosk.sh` launcher that starts Chromium in kiosk mode using `labwc`,
   with `--password-store=basic` so the GNOME keyring never prompts on boot
 - Zero-dependency demo Node server in `demo/` with a full-screen clock on port `3000` with an offline overlay, as a ready-to-run kiosk page
+- `display.sh` to turn the display on and off via `wlr-randr`, with example
+  `crontab` lines for blanking the screen on a schedule, for example, overnight
 
 ### Updated
 - `autostart` wired up the `kiosk.sh` script to `labwc`'s autostart

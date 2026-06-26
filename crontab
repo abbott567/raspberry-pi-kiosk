@@ -1,5 +1,11 @@
 # Install commands:
 # crontab -e
-# Paste the following line at the bottom
+# Paste the following line(s) at the bottom
 
+# Auto-reconnect Wi-Fi every minute
 */1 * * * * /usr/bin/sudo -H /usr/local/bin/check-wifi.sh > /dev/null 2>&1
+
+# Turn the display off at 23:00 and back on at 07:00 every day.
+# Adjust the times to suit, and remove these two lines if you don't want it.
+0 23 * * * /usr/local/bin/display.sh off > /dev/null 2>&1
+0 7  * * * /usr/local/bin/display.sh on  > /dev/null 2>&1

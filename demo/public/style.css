@@ -40,6 +40,14 @@ html, body {
   letter-spacing: -0.02em;
 }
 
+.clock .seconds {
+  font-size: 0.4em;
+  font-weight: 400;
+  color: var(--muted);
+  margin-left: 0.1em;
+  vertical-align: baseline;
+}
+
 .date {
   margin-top: 2vmin;
   font-size: 5vmin;

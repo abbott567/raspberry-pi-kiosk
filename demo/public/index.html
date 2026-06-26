@@ -9,7 +9,7 @@
 </head>
 <body>
   <main class="screen">
-    <div class="clock" id="clock">--:--</div>
+    <div class="clock"><span id="time">--:--</span><span class="seconds" id="seconds">--</span></div>
     <div class="date" id="date">&nbsp;</div>
     <p class="hint">Edit <code>demo/public/index.html</code> to build your own kiosk screen.</p>
   </main>
@@ -18,7 +18,7 @@
   <div class="offline" id="offline" hidden>
     <div class="offline-icon">⚠</div>
     <h1>Connection lost</h1>
-    <p>Retrying…</p>
+    <p>Retrying… <span id="retries">0/5</span></p>
   </div>
 
   <script src="app.js"></script>

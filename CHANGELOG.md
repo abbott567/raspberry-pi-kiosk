@@ -19,6 +19,7 @@ A complete set of updated scripts and config for booting a Raspberry Pi 4/5 stra
 - Zero-dependency demo Node server in `demo/` with a full-screen clock on port `3000` with an offline overlay, as a ready-to-run kiosk page
 - `display.sh` to turn the display on and off via `wlr-randr`, with example
   `crontab` lines for blanking the screen on a schedule, for example, overnight
+- Shared `/etc/kiosk.conf`, read by both `check-wifi.sh` and the demo server via systemd `EnvironmentFile`, so the server retries and the page's offline overlay stay in sync
 
 ### Updated
 - `autostart` wired up the `kiosk.sh` script to `labwc`'s autostart

@@ -340,13 +340,29 @@ Now that it's all up and running, you can just build your interface in regular o
 
 ### Additional tips
 
-You can hide the cursor using CSS. 
+You can hide the cursor using CSS.
 
 To hide it completely, which is ideal for a touchscreen, use the following CSS:
 
 ```css
 html, body { cursor: none; }
 ```
+
+**Note**: CSS only hides the cursor *over your page*, and only once labwc has sent the browser a pointer event. On a touchscreen with no mouse, labwc still draws its own arrow in the centre of the screen at boot, before the first touch, and CSS can't clear that. To hide the compositor cursor too, let `swayidle` fire `labwc`'s built-in `HideCursor` keybind. 
+
+Install the tools:
+
+```bash
+sudo apt install swayidle wtype
+```
+
+Then, and add this to `~/.config/labwc/autostart`, unless you're using this repo's auto-start, as it's already included: [autostart](autostart):
+
+```bash
+swayidle -w timeout 1 'wtype -M logo -M alt -k h -m alt -m logo' &
+```
+
+The cursor then disappears ~1s after boot and re-hides shortly after each touch.
 
 Or, if you want to show it, but hide it after a few seconds of inactivity, use the following CSS and JavaScript:
 

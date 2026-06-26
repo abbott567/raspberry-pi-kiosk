@@ -3,4 +3,15 @@
 # This launches the kiosk script (see kiosk.sh).
 # Adjust the path to wherever you cloned this repo.
 
+# Hide the mouse pointer. labwc draws the cursor at the compositor level, so a
+# page's `cursor: none` CSS can't clear the arrow shown at boot before the first
+# touch. swayidle triggers labwc's built-in HideCursor keybind (Alt + Super + H)
+# after 1s of inactivity, so the pointer disappears on boot and re-hides after 
+# each touch. 
+#
+# Installation command: 
+# sudo apt install swayidle wtype
+
+swayidle -w timeout 1 'wtype -M logo -M alt -k h -m alt -m logo' &
+
 /home/pi/raspberry-pi-kiosk/kiosk.sh &

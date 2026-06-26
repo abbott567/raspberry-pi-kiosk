@@ -1,11 +1,16 @@
-# sudo nano /boot/config.txt
+# Install location: sudo nano /boot/firmware/config.txt
+#
+# NOTE: The official Raspberry Pi 7" touchscreen is auto-detected on Pi OS and 
+# needs NONE of the settings below. You can ignore this file entirely if you're
+# using it. If you want to rotate it, use the desktop "Screen Configuration" tool,
+# or Screen Configuration > Layout > Orientation rather than config.txt.
+#
+# The settings below are only for a fixed-resolution HDMI screens. Under the 
+# default KMS display driver most hdmi_* options are ignored; if an HDMI sceen 
+# won't work, try adding a the following line to /boot/firmware/cmdline.txt first 
+# video=HDMI-A-1:800x480@60
 
 hdmi_force_hotplug=1
 hdmi_group=2
-hdmi_mode=1
 hdmi_mode=87
-hdmi_cvt 800 480 60 6 0 0 0
-?
-start_file=start_x.elf
-fixup_file=fixup_x.elf
-#gpu_mem=128
+hdmi_cvt=800 480 60 6 0 0 0

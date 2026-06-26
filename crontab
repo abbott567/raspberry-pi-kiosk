@@ -1,3 +1,5 @@
+# Install commands:
 # crontab -e
+# Paste the following line at the bottom
 
 */1 * * * * /usr/bin/sudo -H /usr/local/bin/check-wifi.sh > /dev/null 2>&1

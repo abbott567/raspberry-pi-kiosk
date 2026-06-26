@@ -1,0 +1,14 @@
+{
+  "name": "raspberry-pi-kiosk-demo",
+  "version": "1.0.0",
+  "description": "Lightweight zero-dependency Node server for a Raspberry Pi Chromium kiosk demo.",
+  "license": "MIT",
+  "author": "abbott567",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=24"
+  }
+}

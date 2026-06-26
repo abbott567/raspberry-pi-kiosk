@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Raspberry Pi Kiosk</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="screen">
+    <div class="clock" id="clock">--:--</div>
+    <div class="date" id="date">&nbsp;</div>
+    <p class="hint">Edit <code>demo/public/index.html</code> to build your own kiosk screen.</p>
+  </main>
+
+  <!-- Offline overlay: shown when the page can't reach the Node server. -->
+  <div class="offline" id="offline" hidden>
+    <div class="offline-icon">⚠</div>
+    <h1>Connection lost</h1>
+    <p>Retrying…</p>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

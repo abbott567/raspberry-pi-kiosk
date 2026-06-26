@@ -1,5 +1,6 @@
-# sudo apt-get install unclutter
-# nano /home/pi/.config/lxsession/LXDE-pi/autostart
+# Put this startup command in  ~/.config/labwc/autostart
+#
+# This launches the kiosk script (see kiosk.sh).
+# Adjust the path to wherever you cloned this repo.
 
-@chromium-browser —kiosk —incognito http://localhost:3000
-@unclutter -idle 0.1 -root
+/home/pi/raspberry-pi-kiosk/kiosk.sh &

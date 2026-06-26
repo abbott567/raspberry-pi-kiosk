@@ -1,14 +1,28 @@
+# Installation commands:
 # sudo nano /etc/systemd/system/node-server.service
+# sudo systemctl enable --now node-server
+#
+# Runs a local Node app as the unprivileged "pi" user (not root). This is set up 
+# to run the bundled demo server in demo/. Point WorkingDirectory and ExecStart at
+# your own project once you have one, and update User/Group if your account is
+# named differently.
+
+[Unit]
+Description=Kiosk Node server
+After=network-online.target
+Wants=network-online.target
 
 [Service]
-WorkingDirectory=/path/to/your/repo
-ExecStart=/usr/local/bin/node --expose-gc /home/pi/path/to/your/repo/server.js
+Type=simple
+User=pi
+Group=pi
+WorkingDirectory=/home/pi/raspberry-pi-kiosk/demo
+ExecStart=/usr/bin/node /home/pi/raspberry-pi-kiosk/demo/server.js
 Restart=always
-StandardOutput=syslog
-StandardError=syslog
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
 SyslogIdentifier=nodeServer
-User=root
-Group=root
 Environment=NODE_ENV=production
 
 [Install]

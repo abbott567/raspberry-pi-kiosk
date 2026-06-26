@@ -1,0 +1,80 @@
+:root {
+  color-scheme: dark;
+  --bg: #0b1020;
+  --fg: #e8ecff;
+  --muted: #8a93b8;
+  --accent: #5b8cff;
+
+  --err-bg: #2a0d12;
+  --err-fg: #ffd9dc;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  cursor: none;
+  overflow: hidden;
+  user-select: none;
+}
+
+.screen {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 5vmin;
+}
+
+.clock {
+  font-size: 22vmin;
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+.date {
+  margin-top: 2vmin;
+  font-size: 5vmin;
+  color: var(--muted);
+}
+
+.hint {
+  position: fixed;
+  bottom: 3vmin;
+  font-size: 2.4vmin;
+  color: var(--muted);
+}
+
+.hint code {
+  color: var(--accent);
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+/* Full-screen overlay shown when the server can't be reached. */
+.offline {
+  position: fixed;
+  inset: 0;
+  background: var(--err-bg);
+  color: var(--err-fg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 1vmin;
+  padding: 5vmin;
+}
+
+.offline[hidden] { display: none; }
+
+.offline-icon { font-size: 14vmin; line-height: 1; }
+.offline h1 { font-size: 7vmin; margin: 0; }
+.offline p { font-size: 3.5vmin; margin: 0; color: var(--err-fg); }

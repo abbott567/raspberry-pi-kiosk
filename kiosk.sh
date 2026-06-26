@@ -18,6 +18,19 @@
 
 URL="http://localhost:3000"
 
+# Wait for the local Node server to come up before launching Chromium. The
+# browser autostarts in parallel with node-server.service and does NOT retry a
+# failed page load, so if it reaches localhost before the server is listening it
+# gets stuck on Chromium's own "site can't be reached" page instead of our page. 
+# Poll the port until it answers, then launch. Give up after ~60s and launch anyway.
+for _ in $(seq 1 60); do
+  if curl -s -o /dev/null "$URL"; then
+    break
+  fi
+  sleep 1
+done
+
+# Chromium flags
 exec chromium \
   --kiosk \
   --incognito \

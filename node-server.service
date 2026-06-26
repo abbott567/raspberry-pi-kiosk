@@ -9,8 +9,13 @@
 
 [Unit]
 Description=Kiosk Node server
-After=network-online.target
-Wants=network-online.target
+# Only orders after the network stack initialises; deliberately does NOT wait for
+# network-online.target. The server binds localhost and serves the offline page
+# itself, so it must start even with no internet at boot. Waiting for
+# connectivity would delay startup by up to ~90s, during which Chromium hits 
+# localhost too early and shows its own "site can't be reached" error instead 
+# of our Connection lost page.
+After=network.target
 
 [Service]
 Type=simple

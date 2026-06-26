@@ -45,13 +45,13 @@ hostname, and locale in one step.
 7. Username: Enter a username, or leave it as `pi`
 8. Password: Enter and confirm a password
 9. Wi-fi: If you want the Pi to auto-connect to WIFI
-   1. SSID: Enter your network name
-   2. Password: Enter and confirm your network password
+    1. SSID: Enter your network name
+    2. Password: Enter and confirm your network password
 10. SSH: If you want to set up the Pi using another device
-   1. SSH: Enable
-   2. Choose with password authentication
+    1. SSH: Enable
+    2. Choose with password authentication
 11. Raspberry Pi Connect: If you want to control your Pi over the internet
-   1. Pi Connect: Enable
+    1. Pi Connect: Enable
 12. Write the image
 13. Put the card in the Pi and boot it up
 

@@ -25,31 +25,32 @@ function tick() {
 tick();
 setInterval(tick, 1000);
 
-// Poll the server's health endpoint and toggle the overlay on failure.
-// Track consecutive failures so the overlay can show the retry count. After
-// MAX_RETRIES the OS watchdog (check-wifi.sh) reboots the Pi, so the overlay
-// switches to a "Rebooting…" message to reflect what's about to happen.
-const MAX_RETRIES = 5;
-let retries = 0;
-
+// Poll the server's health endpoint and toggle the overlay on failure. The
+// server reports the OS watchdog's real consecutive-failure count from
+// check-wifi.sh, so the overlay shows the true countdown and switches to
+// "Rebooting…" exactly when the watchdog is about to reboot the Pi.
 async function checkHealth() {
   let online = false;
+  let failures = null;
+  let maxFailures = null;
   try {
     const res = await fetch('/health', { cache: 'no-store' });
     online = res.ok;
+    const data = await res.json();
+    failures = data.failures;
+    maxFailures = data.maxFailures;
   } catch {
+    // Local server unreachable: we can't know the watchdog count, so just retry.
     online = false;
   }
 
-  if (online) {
-    retries = 0;
-    statusEl.innerHTML = 'Retrying… <span id="retries">0/5</span>';
-  } else {
-    retries = Math.min(retries + 1, MAX_RETRIES);
-    if (retries >= MAX_RETRIES) {
+  if (!online) {
+    if (failures === null || maxFailures === null) {
+      statusEl.textContent = 'Retrying…';
+    } else if (failures >= maxFailures) {
       statusEl.textContent = 'Rebooting…';
     } else {
-      statusEl.innerHTML = `Retrying… <span id="retries">${retries}/${MAX_RETRIES}</span>`;
+      statusEl.innerHTML = `Retrying… <span id="retries">${failures}/${maxFailures}</span>`;
     }
   }
   offlineEl.hidden = online;

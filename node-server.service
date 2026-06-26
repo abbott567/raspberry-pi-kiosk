@@ -29,6 +29,10 @@ StandardOutput=journal
 StandardError=journal
 SyslogIdentifier=nodeServer
 Environment=NODE_ENV=production
+# Shared kiosk config (HEALTH_URL, MAX_FAILURES, FAIL_FILE, HEALTH_TIMEOUT), the
+# same file check-wifi.sh sources. The leading "-" makes it optional, so the
+# server still starts on its built-in defaults if the file isn't installed.
+EnvironmentFile=-/etc/kiosk.conf
 
 [Install]
 WantedBy=multi-user.target

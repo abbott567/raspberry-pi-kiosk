@@ -194,6 +194,8 @@ curl http://localhost:3000
 
 You should get back the HTML from the `index.html` page.
 
+The service also reads `/etc/kiosk.conf` if it exists (via `EnvironmentFile`), sharing `HEALTH_URL`, `MAX_FAILURES`, `FAIL_FILE`, and `HEALTH_TIMEOUT` with the Wi-Fi watchdog from [Step 8](#step-8-auto-reconnect-wi-fi). It's optional — the server falls back to sensible defaults without it — so you can install it now or when you reach Step 8. If you add or change it later, run `sudo systemctl restart node-server` to pick it up.
+
 ### Loading your own node project
 
 Clone it onto the Pi. Then, edit the service file to match. You'll need to update the `WorkingDirectory`, `ExecStart`, and the `port`
@@ -258,11 +260,14 @@ sudo nano /boot/firmware/config.txt
 
 ## Step 8. Auto-reconnect Wi-Fi
 
-Wi-Fi can be flaky on the Pi. The [`check-wifi.sh`](check-wifi.sh) script pings out to the internet every minute, and if it detects it's down, reconnects the Wi-Fi via `nmcli` (NetworkManager). If the reconnect fails 5 times in a row, the Pi reboots itself as a last resort. You can change the number of retries in the script file if you need to.
+Wi-Fi can be flaky on the Pi. The [`check-wifi.sh`](check-wifi.sh) script checks the internet every minute by requesting `HEALTH_URL`, and if it detects it's down, reconnects the Wi-Fi via `nmcli` (NetworkManager). If the reconnect fails 5 times in a row, the Pi reboots itself as a last resort.
 
-Install the `check-wifi.sh` script and make it executable:
+The number of retries (`MAX_FAILURES`) and the URL it checks (`HEALTH_URL`) live in [`kiosk.conf`](kiosk.conf). The kiosk server reads the same file (see [Step 5](#step-5-run-your-node-server-on-startup)), so both use the same definition of "online" which keeps the offline overlay's `X/5` countdown in sync with the reboot logic. Use the same `HEALTH_URL` here as the server, or the page can show "offline" while the watchdog still thinks the link is up.
+
+Install the shared config, then the `check-wifi.sh` script, and make the script executable:
 
 ```bash
+sudo cp kiosk.conf /etc/kiosk.conf
 sudo cp check-wifi.sh /usr/local/bin/check-wifi.sh
 sudo chmod 755 /usr/local/bin/check-wifi.sh
 ```

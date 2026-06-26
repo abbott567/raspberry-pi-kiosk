@@ -16,8 +16,28 @@ const HOST = process.env.HOST || '0.0.0.0';
 const PUBLIC_DIR = path.join(__dirname, 'public');
 
 // URL the health check pings to confirm the internet is actually reachable.
+// Supplied by the shared /etc/kiosk.conf via systemd EnvironmentFile that
+// check-wifi.sh also reads, so the watchdog's reboot countdown and this page's
+// offline overlay agree on what "online" means. The default matches kiosk.conf.
 const HEALTH_URL = process.env.HEALTH_URL || 'https://www.google.com/generate_204';
 const HEALTH_TIMEOUT = Number(process.env.HEALTH_TIMEOUT || 4000);
+
+// Mirrors check-wifi.sh: that cron watchdog writes its consecutive-failure count
+// to this file and reboots the Pi once the count reaches MAX_FAILURES. Surfaces
+// the same numbers via /health so the page shows the real countdown, not a guess.
+// Keep these in sync with check-wifi.sh.
+const FAIL_FILE = process.env.FAIL_FILE || '/tmp/check-wifi-failures';
+const MAX_FAILURES = Number(process.env.MAX_FAILURES || 5);
+
+// The watchdog removes the file when the connection is healthy, so a missing or
+// unreadable file means zero consecutive failures.
+function readFailures() {
+  try {
+    return Number.parseInt(fs.readFileSync(FAIL_FILE, 'utf8'), 10) || 0;
+  } catch {
+    return 0;
+  }
+}
 
 // Resolve to true only if it can actually reach the wider internet, so the
 // kiosk can show its offline screen when the connection drops
@@ -62,10 +82,16 @@ function sendFile(res, filePath) {
 const server = http.createServer((req, res) => {
   if (req.url === '/health') {
     checkInternet().then((online) => {
+      const failures = online ? 0 : readFailures();
       res.writeHead(online ? 200 : 503, {
         'Content-Type': 'application/json; charset=utf-8',
       });
-      res.end(JSON.stringify({ ok: online, time: new Date().toISOString() }));
+      res.end(JSON.stringify({
+        ok: online,
+        failures,
+        maxFailures: MAX_FAILURES,
+        time: new Date().toISOString(),
+      }));
     });
     return;
   }

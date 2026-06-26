@@ -12,13 +12,23 @@
 IFACE="$(nmcli -t -f DEVICE,TYPE device | awk -F: '$2=="wifi"{print $1; exit}')"
 IFACE="${IFACE:-wlan0}"
 
-# Counter of consecutive failures, persisted between cron runs. The failures are 
-# logged in /tmp so are wiped on reboot.
-FAIL_FILE="/tmp/check-wifi-failures"
-MAX_FAILURES=5
+# Shared config, also loaded by the kiosk server via systemd's EnvironmentFile so
+# the watchdog and the page can't drift apart on what "online" means or how many
+# failures trigger a reboot. See kiosk.conf.
+CONFIG_FILE="${KIOSK_CONFIG:-/etc/kiosk.conf}"
+# shellcheck source=/dev/null
+[ -r "${CONFIG_FILE}" ] && . "${CONFIG_FILE}"
 
-# Ping Google and check the response
-if ping -c4 -W5 8.8.8.8 > /dev/null 2>&1; then
+# Counter of consecutive failures, persisted between cron runs in /tmp so is wiped 
+# on reboot. The test MUST match server.js's HEALTH_URL: otherwise the page can 
+# show its offline overlay  because the server's HTTPS check failed whilst this
+# wacher still sees the link as up, keeping the page's counter at 0.
+FAIL_FILE="${FAIL_FILE:-/tmp/check-wifi-failures}"
+MAX_FAILURES="${MAX_FAILURES:-5}"
+HEALTH_URL="${HEALTH_URL:-https://www.google.com/generate_204}"
+
+# Check the connection and the response
+if curl -fsS -m 5 -o /dev/null "${HEALTH_URL}" > /dev/null 2>&1; then
   # Online: clear any recorded failures and exit
   rm -f "${FAIL_FILE}"
   exit 0
